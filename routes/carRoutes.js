@@ -8,16 +8,13 @@ import upload from '../middlewares/upload.js';
 const router = express.Router();
 
 
-
-
 const uploadImages = upload.fields([
     { name: 'carMainImage', maxCount: 1 },   // Single main image
     { name: 'carGallery', maxCount: 5 },     // Up to 5 gallery images
 ])
 
 
-router.post('/', protect, uploadImages
-    , createCar);
+router.post('/', protect, uploadImages, createCar);
 router.get('/', getCars);
 router.get('/:id', getCarById);
 router.put('/:id', uploadImages, protect, updateCar);

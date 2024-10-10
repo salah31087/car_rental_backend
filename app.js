@@ -6,6 +6,9 @@ import carRoutes from './routes/carRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
 import reservationRoutes from './routes/reservationRoutes.js';
 import mongoose from './configs/db.js';
+import cookieParser from 'cookie-parser';
+import protectedRoutes from './routes/protectedRoutes.js';
+
 
 dotenv.config();
 
@@ -21,13 +24,14 @@ app.use(cors({
 }));
 app.use('/uploads', express.static('uploads'));
 app.use(express.json());
+app.use(cookieParser()); // Parse cookies attached to the request
 
 
 const PORT = process.env.PORT || 3000;
 
 
-
 // Routes
+app.use(protectedRoutes); // Routes that require authentication
 app.use('/auth', authRoutes);
 app.use('/cars', carRoutes);
 app.use('/contacts', contactRoutes);

@@ -1,6 +1,4 @@
 import Car from '../models/Car.js';
-import carSchema from '../validators/carValidator.js';
-import updateCarSchema from '../validators/updateCarValidator.js';
 import { handleErrorResponse } from '../utils/errorHandler.js';
 import fs from 'fs';
 import path from 'path';
@@ -191,7 +189,7 @@ export const deleteCar = async (req, res) => {
 };
 
 
-// ! Delete all cars
+// Delete all cars
 export const deleteAllCars = async (req, res) => {
     try {
         await Car.deleteMany();

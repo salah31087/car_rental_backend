@@ -1,34 +1,33 @@
+import jwt from "jsonwebtoken";
 
 
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
 
-dotenv.config();
-const JWT_SECRET = process.env.JWT_SECRET
+const protect = (req, res, next) => {
+    const token = req.cookies.token;
 
-
-function protect(req, res, next) {
-    const authHeader = req.header('Authorization');
-
-    // Check if Authorization header is present and starts with 'Bearer '
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(401).json({ message: 'No token, authorization denied' });
+    if (!token) {
+        return res.status(401).json({ message: "Unauthorized: No token provided" });
     }
-
-    // Extract the token from the 'Bearer <token>' string
-    const token = authHeader.split(' ')[1];
 
     try {
         // Verify the token
-        const decoded = jwt.verify(token, JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded; // Attach decoded user info to request object
+        next();
+    } catch (error) {
+        if (error.name === "TokenExpiredError") {
+            return res.status(401).json({ message: "Unauthorized: Token expired" });
+        } else if (error.name === "JsonWebTokenError") {
+            return res.status(401).json({ message: "Unauthorized: Invalid token" });
+        }
 
-        // Attach decoded token data to req.user (e.g., userId, role, etc.)
-        req.user = decoded;
+        // Log the error for debugging purposes
+        console.error('Token verification error:', error);
 
-        next(); // Pass control to the next middleware/route handler
-    } catch (err) {
-        res.status(401).json({ message: 'Token is not valid' });
+        // General unauthorized response
+        return res.status(401).json({ message: "Unauthorized" });
     }
-}
+};
 
-export default protect;
+
+export default protect

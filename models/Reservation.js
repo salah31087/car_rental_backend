@@ -15,6 +15,7 @@ const reservationSchema = new Schema({
     location: {
         type: String,
         required: true,
+        transform: (value) => value.toLowerCase()
     },
     number: {
         type: String,
