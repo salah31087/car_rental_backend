@@ -1,18 +1,10 @@
 import Reservation from "../models/Reservation.js";
-import reservationValidationSchema from "../validators/reservationValidator.js";
+import reservationValidationSchema, { reservationUpdateValidationSchema } from "../validators/reservationValidator.js";
 import Car from "../models/Car.js";
 import * as yup from "yup";
 
 
-// Get all reservations
-// export const getReservations = async (req, res) => {
-//   try {
-//     const reservations = await Reservation.find();
-//     res.json(reservations);
-//   } catch (error) {
-//     res.status(500).json({ message: "Error fetching reservations.", error });
-//   }
-// };
+
 
 export const getReservations = async (req, res) => {
   try {
@@ -47,7 +39,7 @@ export const getReservations = async (req, res) => {
         {
           title: "Revenue",
           icon: "coin",
-          value:  totalRevenue,
+          value: totalRevenue,
           description: "Total revenue from confirmed reservations",
         },
         {
@@ -68,38 +60,16 @@ export const getReservations = async (req, res) => {
           value: pendingReservations,
           description: "Total pending reservations",
         },
-        
+
       ],
 
-    
+
     });
   } catch (error) {
     // Gérer les erreurs
     res.status(500).json({ message: "Error fetching reservations.", error });
   }
 };
-
-// const data = [
-//   {
-//     title: "Revenue",
-//     icon: "coin",
-//     value: "13,456",
-//     description: "Total revenue from confirmed reservations",
-//   },
-//   { title: "cars", icon: "car", value: "4,145", description: "Total cars" },
-//   {
-//     title: "confirmed reservations",
-//     icon: "receipt",
-//     value: "745",
-//     description: "Total confirmed reservations",
-//   },
-//   {
-//     title: "pending reservations",
-//     icon: "pending",
-//     value: "188",
-//     description: "Total pending reservations",
-//   },
-// ];
 
 // Get reservation by ID
 export const getReservationById = async (req, res) => {
@@ -139,9 +109,10 @@ export const createReservation = async (req, res) => {
     if (!car) {
       return res.status(404).json({ message: "Car not found." });
     }
-    if (!car.availability) {
-      return res.status(400).json({ message: "Car is not available." });
-    }
+    // ! updated
+    // if (!car.availability) {
+    //   return res.status(400).json({ message: "Car is not available." });
+    // }
     const start = new Date(startDate);
     const end = new Date(endDate);
     const timeDiff = Math.abs(end - start);
@@ -164,14 +135,14 @@ export const createReservation = async (req, res) => {
     });
 
     await newReservation.save();
-    const updateavalableCar = await Car.findByIdAndUpdate(
-      carId,
-      { availability: false },
-      { new: true }
-    );
+    // ! updated
+    // const updateavalableCar = await Car.findByIdAndUpdate(
+    //   carId,
+    //   { availability: false },
+    //   { new: true }
+    // );
     res.status(201).json({
       message: "Reservation created successfully.",
-      car: "status available:" + updateavalableCar.availability,
       reservation: {
         ...newReservation.toObject(),
         pricePerDay: car.pricePerDay,
@@ -230,7 +201,6 @@ export const updateReservation = async (req, res) => {
     });
 
     const {
-      carId,
       name,
       location,
       number,
@@ -241,7 +211,7 @@ export const updateReservation = async (req, res) => {
 
     const updatedReservation = await Reservation.findByIdAndUpdate(
       id,
-      { carId, name, location, number, startDate, endDate, totalPricePerHour },
+      { name, location, number, startDate, endDate, totalPricePerHour },
       { new: true }
     );
 

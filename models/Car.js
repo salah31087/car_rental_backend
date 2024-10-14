@@ -18,7 +18,7 @@ const carSchema = new Schema(
     description: String,
     carMainImage: String,
     carGallery: [String],
-    availability: Boolean,
+    availability: { type: Boolean, default: true },
   },
   { timestamps: true }
 );
