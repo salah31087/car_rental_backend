@@ -2,38 +2,19 @@ import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
-const reservationSchema = new Schema({
+const reservationSchema = new Schema({ 
     carId: {
         type: Schema.Types.ObjectId,
         required: true,
         ref: 'Car' // Assuming you have a Car model
     },
-    name: {
-        type: String,
-        required: true,
-    },
-    location: {
-        type: String,
-        required: true,
-        transform: (value) => value.toLowerCase()
-    },
-    number: {
-        type: String,
-        required: true,
-    },
-    startDate: {
-        type: Date,
-        required: true
-    },
-    endDate: {
-        type: Date,
-        required: true
-    },
-    status: {
-        type: String,
-        enum: ['pending', 'confirmed'],
-        default: 'pending'
-    },
+   name: String,
+  location:{type: String,
+    transform: (value) => value.toLowerCase()},
+  number: String,
+  startDate: Date,
+  endDate: Date,
+  status: String,
     createdAt: {
         type: Date,
         default: Date.now
@@ -42,12 +23,11 @@ const reservationSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    totalPrice: {
-        type: Number
-    },
-    totalPricePerHour: {
-        type: Number
-    }
+    totalPrice: 
+         Number,
+    totalPricePerHour: 
+         Number 
+    
 });
 
 // Create the Reservation model

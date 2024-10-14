@@ -127,7 +127,8 @@ export const login = async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,
             maxAge: maxAge * 1000, // Adjust maxAge as per your requirement
-            secure: process.env.NODE_ENV === 'production' // Use secure cookies in production
+            secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+            sameSite: 'strict',
         });
 
 
