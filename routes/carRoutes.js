@@ -22,3 +22,4 @@ router.delete('/:id', protect, deleteCar);
 router.delete('/', deleteAllCars);
 
 export default router;
+

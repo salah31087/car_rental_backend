@@ -2,23 +2,27 @@ import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
-const carSchema = new Schema({
-  model: { type: String, required: true },
-  type: { type: String, required: true },
-  pricePerDay: { type: Number, required: true },
-  location: { type: String, required: true },
-  gearBox: { type: String, required: true },
-  maximumSpeed: { type: Number, required: true },
-  fuelType: { type: String, required: true },
-  manufacturedYear: { type: Number, required: true },
-  maxPassengers: { type: Number, required: true },
-  mileage: { type: Number, required: true },
-  airCondition: { type: Boolean, required: true },
-  description: { type: String },
-  carMainImage: { type: String, required: true },
-  carGallery: { type: [String], required: false },
-  availability: { type: Boolean, default: false },
-}, { timestamps: true });
+const carSchema = new Schema(
+  {
+    model: String,
+    type: String,
+    pricePerDay: Number,
+    location: String,
+    gearBox: String,
+    maximumSpeed: Number,
+    fuelType: String,
+    manufacturedYear: Number,
+    maxPassengers: Number,
+    mileage: Number,
+    airCondition: Boolean,
+    description: String,
+    carMainImage: String,
+    carGallery: [String],
+    availability: Boolean,
+  },
+  { timestamps: true }
+);
+
 
 const Car = mongoose.model('Car', carSchema);
 

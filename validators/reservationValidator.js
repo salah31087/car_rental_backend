@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-const reservationValidationSchema = yup.object().shape({
+export const reservationValidationSchema = yup.object().shape({
     carId: yup
         .string()
         .required('Car ID is required.'),
@@ -37,4 +37,36 @@ const reservationValidationSchema = yup.object().shape({
         .oneOf(['pending', 'confirmed'], 'Status must be either "pending" or "confirmed".')
 });
 
+export const reservationUpdateValidationSchema = yup.object().shape({
+  carId: yup.string().required("Car ID is required."),
+
+  name: yup
+    .string()
+    .min(2, "Name must be at least 2 characters long.")
+    .max(100, "Name must be at most 100 characters long."),
+
+  location: yup
+    .string()
+    .min(3, "Location must be at least 3 characters long.")
+    .max(100, "Location must be at most 100 characters long."),
+
+  number: yup.string().matches(/^[0-9]{10}$/, "Phone number must be 10 digits"),
+
+  startDate: yup
+    .date()
+    .min(new Date(), "Start date must be in the future."),
+
+  endDate: yup
+    .date()
+    .min(yup.ref("startDate"), "End date must be after start date."),
+
+  status: yup
+    .string().trim()
+    .oneOf(
+      ["pending", "confirmed"],
+      'Status must be either "pending" or "confirmed".'
+    ),
+});
+
 export default reservationValidationSchema;
+
