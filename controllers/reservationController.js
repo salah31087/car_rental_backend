@@ -110,9 +110,9 @@ export const createReservation = async (req, res) => {
       return res.status(404).json({ message: "Car not found." });
     }
     // ! updated
-    // if (!car.availability) {
-    //   return res.status(400).json({ message: "Car is not available." });
-    // }
+    if (!car.availability) {
+      return res.status(400).json({ message: "Car is not available." });
+    }
     const start = new Date(startDate);
     const end = new Date(endDate);
     const timeDiff = Math.abs(end - start);
@@ -135,12 +135,12 @@ export const createReservation = async (req, res) => {
     });
 
     await newReservation.save();
-    // ! updated
-    // const updateavalableCar = await Car.findByIdAndUpdate(
-    //   carId,
-    //   { availability: false },
-    //   { new: true }
-    // );
+    // 
+    await Car.findByIdAndUpdate(
+      carId,
+      { availability: false },
+      { new: true }
+    );
     res.status(201).json({
       message: "Reservation created successfully.",
       reservation: {
@@ -161,7 +161,22 @@ export const createReservation = async (req, res) => {
 // Delete reservation by ID
 export const deleteReservation = async (req, res) => {
   try {
+
     const { id } = req.params;
+
+    const reservation = await Reservation.findById(id);
+
+    if (!reservation) {
+      return res.status(404).json({ message: "Reservation not found." });
+    }
+
+    // Update car availability
+    await Car.findByIdAndUpdate(
+      reservation.carId,
+      { availability: true },
+      { new: true }
+    );
+
     const deletedReservation = await Reservation.findByIdAndDelete(id);
 
     if (!deletedReservation) {
@@ -176,6 +191,7 @@ export const deleteReservation = async (req, res) => {
     res.status(500).json({ message: "Error deleting reservation.", error });
   }
 };
+
 
 // Delete all reservations
 export const deleteAllReservations = async (req, res) => {

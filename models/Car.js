@@ -14,7 +14,7 @@ const carSchema = new Schema(
     manufacturedYear: Number,
     maxPassengers: Number,
     mileage: Number,
-    airCondition: Boolean,
+    airCondition: String,
     description: String,
     carMainImage: String,
     carGallery: [String],

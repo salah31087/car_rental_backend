@@ -29,21 +29,27 @@ export const createCar = async (req, res) => {
       availability,
     } = req.body;
 
-    // Check if images are uploaded
-    if (!req.files || !req.files["carMainImage"] || !req.files["carGallery"]) {
+
+    // Check if the main image is uploaded
+    if (!req.files || !req.files["carMainImage"]) {
       return res
         .status(400)
         .json({
           success: false,
-          message: "Please upload both main image and gallery images",
+          message: "Please upload the main image",
         });
     }
 
     // Extract the file paths and add `/uploads/` prefix
     const carMainImage = `/uploads/${req.files["carMainImage"][0].filename}`; // Store the main image path
-    const carGallery = req.files["carGallery"].map(
-      (file) => `/uploads/${file.filename}`
-    ); // Store the gallery images' paths
+
+    // Initialize the carGallery variable and conditionally set it
+    let carGallery = [];
+    if (req.files["carGallery"]) {
+      carGallery = req.files["carGallery"].map(
+        (file) => `/uploads/${file.filename}`
+      );
+    }
 
     // Create the car object with the images' paths
     const newCar = new Car({
@@ -60,7 +66,7 @@ export const createCar = async (req, res) => {
       airCondition,
       description,
       carMainImage, // Save the main image path
-      carGallery, // Save the gallery images paths
+      carGallery: carGallery.length > 0 ? carGallery : undefined, // Only include carGallery if images are provided
       availability,
     });
 
@@ -76,6 +82,7 @@ export const createCar = async (req, res) => {
     handleErrorResponse(res, error); // Error handler middleware
   }
 };
+
 
 // Update car
 export const updateCar = async (req, res) => {
@@ -152,44 +159,44 @@ export const updateCar = async (req, res) => {
 };
 // Get all cars
 export const getCars = async (req, res) => {
-    try {
-        const cars = await Car.find();
-        res.json({ success: true, cars });
-    } catch (error) {
-        handleErrorResponse(res, error);
-    }
+  try {
+    const cars = await Car.find();
+    res.json({ success: true, cars });
+  } catch (error) {
+    handleErrorResponse(res, error);
+  }
 };
 
 // Get car by ID
 export const getCarById = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const car = await Car.findById(id);
-        if (!car) return res.status(404).json({ success: false, message: 'Car not found' });
-        res.json({ success: true, car });
-    } catch (error) {
-        handleErrorResponse(res, error);
-    }
+  try {
+    const { id } = req.params;
+    const car = await Car.findById(id);
+    if (!car) return res.status(404).json({ success: false, message: 'Car not found' });
+    res.json({ success: true, car });
+  } catch (error) {
+    handleErrorResponse(res, error);
+  }
 };
 
 // Delete car
 export const deleteCar = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const car = await Car.findByIdAndDelete(id);
-        if (!car) return res.status(404).json({ success: false, message: 'Car not found' });
-        res.json({ success: true, message: 'Car deleted successfully' });
-    } catch (error) {
-        handleErrorResponse(res, error);
-    }
+  try {
+    const { id } = req.params;
+    const car = await Car.findByIdAndDelete(id);
+    if (!car) return res.status(404).json({ success: false, message: 'Car not found' });
+    res.json({ success: true, message: 'Car deleted successfully' });
+  } catch (error) {
+    handleErrorResponse(res, error);
+  }
 };
 
 // Delete all cars
 export const deleteAllCars = async (req, res) => {
-    try {
-        await Car.deleteMany();
-        res.json({ success: true, message: 'All cars deleted successfully' });
-    } catch (error) {
-        handleErrorResponse(res, error);
-    }
+  try {
+    await Car.deleteMany();
+    res.json({ success: true, message: 'All cars deleted successfully' });
+  } catch (error) {
+    handleErrorResponse(res, error);
+  }
 }
